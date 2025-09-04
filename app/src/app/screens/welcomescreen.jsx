@@ -1,3 +1,4 @@
+import Link from "next/link";
 function WelcomeScreen() {
     return (
         <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
@@ -10,9 +11,11 @@ function WelcomeScreen() {
                 </div>
 
                 <div className="py-4">
+                    <Link href="./camerascreen">
                     <button className="w-full py-3 text-lg bg-blue-600 text-white rounded-lg hover:bg-gray-300 hover:text-blue-600 transition duration-300">
                         Take a Pic
                     </button>
+                    </Link>
                 </div>
             </div>
         </div>
