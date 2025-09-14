@@ -1,18 +1,38 @@
-// welcomescreen.tsx
 'use client'
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 
-export default function WelcomeScreen() {
+export interface WelcomeScreenProps {
+  onNext: (billData: any) => void;
+}
+
+export default function WelcomeScreen({ onNext }: WelcomeScreenProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
 
-  const handleNext = () => {
-    console.log("Next clicked");
-    // Add navigation logic here, e.g., using Next.js router
-  };
+  const handleImageCapture = async (file: File) => {
+    setIsProcessing(true);
+    
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
 
-  const handleCapture = (file: File) => {
-    console.log("File captured:", file);
-    // Add file processing logic here
+      const response = await fetch('/api/process-bill', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to process bill');
+      }
+
+      const billData = await response.json();
+      onNext(billData);
+    } catch (error) {
+      console.error('Error processing image:', error);
+      alert('Failed to process the bill. Please try again.');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -24,6 +44,7 @@ export default function WelcomeScreen() {
             Take a picture, select your food items, and stop worrying about the bill!
           </p>
         </div>
+
         <div className="py-4">
           <input
             type="file"
@@ -33,17 +54,16 @@ export default function WelcomeScreen() {
             className="hidden"
             onChange={(e) => {
               const file = e.target.files?.[0];
-              if (file) handleCapture(file);
+              if (file) handleImageCapture(file);
             }}
           />
           <button
-            className="w-full py-3 text-lg bg-blue-600 text-white rounded-lg hover:bg-gray-300 hover:text-blue-600 transition duration-300"
+            className="w-full py-3 text-lg bg-blue-600 text-white rounded-lg hover:bg-gray-300 hover:text-blue-600 transition duration-300 disabled:opacity-50"
             onClick={() => fileInputRef.current?.click()}
+            disabled={isProcessing}
           >
-            Take a Pic
+            {isProcessing ? 'Processing...' : 'Take a Pic'}
           </button>
-          {/* Optional: Separate button for onNext */}
-          {/* <button onClick={handleNext}>Skip</button> */}
         </div>
       </div>
     </div>
