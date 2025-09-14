@@ -1,18 +1,19 @@
+// welcomescreen.tsx
 'use client'
 import React, { useRef } from 'react';
 
-export interface WelcomeScreenProps {
-  onNext: () => void;
-}
-
-interface CameraScreenProps {
-  onCapture: (file: File) => void;
-}
-
-interface Props extends WelcomeScreenProps, CameraScreenProps {}
-
-export default function WelcomeScreen({ onNext, onCapture }: Props) {
+export default function WelcomeScreen() {
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleNext = () => {
+    console.log("Next clicked");
+    // Add navigation logic here, e.g., using Next.js router
+  };
+
+  const handleCapture = (file: File) => {
+    console.log("File captured:", file);
+    // Add file processing logic here
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
@@ -23,7 +24,6 @@ export default function WelcomeScreen({ onNext, onCapture }: Props) {
             Take a picture, select your food items, and stop worrying about the bill!
           </p>
         </div>
-
         <div className="py-4">
           <input
             type="file"
@@ -33,15 +33,17 @@ export default function WelcomeScreen({ onNext, onCapture }: Props) {
             className="hidden"
             onChange={(e) => {
               const file = e.target.files?.[0];
-              if (file) onCapture(file);
+              if (file) handleCapture(file);
             }}
           />
           <button
             className="w-full py-3 text-lg bg-blue-600 text-white rounded-lg hover:bg-gray-300 hover:text-blue-600 transition duration-300"
-            onClick={() => fileInputRef.current?.click()} 
+            onClick={() => fileInputRef.current?.click()}
           >
             Take a Pic
           </button>
+          {/* Optional: Separate button for onNext */}
+          {/* <button onClick={handleNext}>Skip</button> */}
         </div>
       </div>
     </div>
