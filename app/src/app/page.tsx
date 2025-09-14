@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react';
 import WelcomeScreen from '@/app/screens/welcomescreen';
-import ResultsScreen, { BillItem } from '@/app/screens/resultsscreen';
+import ResultsScreen, { BillItem, ItemAssignment, Person } from '@/app/screens/resultsscreen';
 
 type Screen = 'welcome' | 'results';
 
@@ -14,7 +14,8 @@ export default function Home() {
     const items: BillItem[] = billData.items.map((item: any, index: number) => ({
       id: index.toString(),
       name: item.name,
-      price: item.price
+      price: item.price,
+      quantity: item.quantity || 1  // Add quantity field
     }));
     
     setBillItems(items);
@@ -26,9 +27,10 @@ export default function Home() {
     setBillItems([]);
   };
 
-  const handleResultsNext = (selectedItems: BillItem[]) => {
-    // TODO: Handle next step with selected items
-    console.log('Selected items:', selectedItems);
+  const handleResultsNext = (assignments: ItemAssignment[], people: Person[]) => {
+    // TODO: Handle next step with assignments and people data
+    console.log('Assignments:', assignments);
+    console.log('People:', people);
   };
 
   if (currentScreen === 'welcome') {
