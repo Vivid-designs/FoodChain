@@ -1,19 +1,53 @@
 'use client'
 import { useState } from 'react';
-import WelcomeScreen from "@/app/screens/welcomescreen";
+import WelcomeScreen from '@/app/screens/welcomescreen';
+import ResultsScreen, { BillItem } from '@/app/screens/resultsscreen';
+
+type Screen = 'welcome' | 'results';
 
 export default function Home() {
-  const [billData, setBillData] = useState(null);
+  const [currentScreen, setCurrentScreen] = useState<Screen>('welcome');
+  const [billItems, setBillItems] = useState<BillItem[]>([]);
 
-  const handleNext = (data: any) => {
-    setBillData(data);
-    console.log('Bill processed:', data);
-    // Navigate to results screen or show processing complete
+  const handleWelcomeNext = (billData: any) => {
+    // Convert API response to BillItem format
+    const items: BillItem[] = billData.items.map((item: any, index: number) => ({
+      id: index.toString(),
+      name: item.name,
+      price: item.price
+    }));
+    
+    setBillItems(items);
+    setCurrentScreen('results');
   };
 
-  return (
-    <>
-      <WelcomeScreen onNext={handleNext} />
-    </>
-  );
+  const handleBackToWelcome = () => {
+    setCurrentScreen('welcome');
+    setBillItems([]);
+  };
+
+  const handleResultsNext = (selectedItems: BillItem[]) => {
+    // TODO: Handle next step with selected items
+    console.log('Selected items:', selectedItems);
+  };
+
+  if (currentScreen === 'welcome') {
+    return (
+      <WelcomeScreen 
+        onNext={handleWelcomeNext}
+      />
+    );
+  }
+
+  if (currentScreen === 'results') {
+    return (
+      <ResultsScreen 
+        items={billItems}
+        onBack={handleBackToWelcome}
+        onNext={handleResultsNext}
+      />
+    );
+  }
+
+  return null;
 }
